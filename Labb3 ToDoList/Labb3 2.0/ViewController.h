@@ -10,8 +10,7 @@
 
 @interface ViewController : UIViewController
 
-@property (nonatomic) NSMutableArray *toDoList;
-
+@property (nonatomic) NSMutableArray *listOfTasks;
 
 @end
 

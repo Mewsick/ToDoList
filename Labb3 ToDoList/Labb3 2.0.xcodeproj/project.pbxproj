@@ -16,7 +16,6 @@
 		073356C123DB33D600826B3F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 073356C023DB33D600826B3F /* main.m */; };
 		073356CB23DB33D600826B3F /* Labb3_2_0Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 073356CA23DB33D600826B3F /* Labb3_2_0Tests.m */; };
 		073356D623DB33D700826B3F /* Labb3_2_0UITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 073356D523DB33D700826B3F /* Labb3_2_0UITests.m */; };
-		0742D70B23DF0ED3003F646D /* toDoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0742D70A23DF0ED3003F646D /* toDoCell.m */; };
 		0742D70E23DF3097003F646D /* objectInArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 0742D70D23DF3097003F646D /* objectInArray.m */; };
 /* End PBXBuildFile section */
 
@@ -56,8 +55,6 @@
 		073356D123DB33D600826B3F /* Labb3 2.0UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Labb3 2.0UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		073356D523DB33D700826B3F /* Labb3_2_0UITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Labb3_2_0UITests.m; sourceTree = "<group>"; };
 		073356D723DB33D700826B3F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0742D70923DF0ED3003F646D /* toDoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = toDoCell.h; sourceTree = "<group>"; };
-		0742D70A23DF0ED3003F646D /* toDoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = toDoCell.m; sourceTree = "<group>"; };
 		0742D70C23DF3097003F646D /* objectInArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = objectInArray.h; sourceTree = "<group>"; };
 		0742D70D23DF3097003F646D /* objectInArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = objectInArray.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,8 +112,6 @@
 				0742D70C23DF3097003F646D /* objectInArray.h */,
 				0742D70D23DF3097003F646D /* objectInArray.m */,
 				073356B123DB33CE00826B3F /* SceneDelegate.h */,
-				0742D70923DF0ED3003F646D /* toDoCell.h */,
-				0742D70A23DF0ED3003F646D /* toDoCell.m */,
 				073356B223DB33CE00826B3F /* SceneDelegate.m */,
 				073356B423DB33CE00826B3F /* ViewController.h */,
 				073356B523DB33CE00826B3F /* ViewController.m */,
@@ -280,7 +275,6 @@
 				073356B623DB33CE00826B3F /* ViewController.m in Sources */,
 				073356B023DB33CE00826B3F /* AppDelegate.m in Sources */,
 				073356C123DB33D600826B3F /* main.m in Sources */,
-				0742D70B23DF0ED3003F646D /* toDoCell.m in Sources */,
 				073356B323DB33CE00826B3F /* SceneDelegate.m in Sources */,
 				0742D70E23DF3097003F646D /* objectInArray.m in Sources */,
 			);

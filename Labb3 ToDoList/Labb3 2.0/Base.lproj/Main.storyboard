@@ -20,31 +20,13 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="toDoCell" id="SIY-0Q-dVP" customClass="toDoCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="myCell" id="lqz-wG-lDI">
                                         <rect key="frame" x="0.0" y="28" width="374" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="toDoCell" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SIY-0Q-dVP" id="VuA-q7-wPL">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lqz-wG-lDI" id="k7Z-nl-S9w">
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gJP-32-WyA">
-                                                    <rect key="frame" x="342" y="11" width="22" height="22"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Button" image="checkmark.seal" catalog="system">
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="font" scale="default" weight="bold">
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                        </preferredSymbolConfiguration>
-                                                    </state>
-                                                    <connections>
-                                                        <action selector="setUrgent:" destination="SIY-0Q-dVP" eventType="touchUpInside" id="sv7-ht-5eA"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="toDoView" destination="VuA-q7-wPL" id="JPo-9f-prN"/>
-                                            <outlet property="urgentButton" destination="gJP-32-WyA" id="5W4-ae-OwB"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -101,7 +83,4 @@
             <point key="canvasLocation" x="-1126" y="-392"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="checkmark.seal" catalog="system" width="64" height="60"/>
-    </resources>
 </document>

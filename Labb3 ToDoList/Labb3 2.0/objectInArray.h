@@ -13,9 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface objectInArray : NSObject
-@property NSString *taskDescription;
+@property (nonatomic) NSString *taskDescription;
 @property (nonatomic, assign) BOOL isUrgent;
-@property UIColor *backgroundColor;
+@property (nonatomic) UIColor *backgroundColor;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -9,11 +9,13 @@
 #import "ViewController.h"
 #import "objectInArray.h"
 
+
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *toDoTable;
 @property (weak, nonatomic) IBOutlet UITextField *inputField;
 @property (weak, nonatomic) IBOutlet UIButton *addTaskButton;
+@property NSMutableArray *arrayOfDictionaries;
 
 @end
 
@@ -25,45 +27,67 @@
     self.toDoTable.delegate = self;
     self.inputField.delegate = self;
     if([self loadState] != nil){
-        self.listOfTasks = [self loadState];
+        self.arrayOfDictionaries = [self loadState];
+        //packa upp array of dictionarys och konvertera till objectInArray
+        self.listOfTasks = [self convertDictionaryToArrayOfObjects:self.arrayOfDictionaries];
+        NSLog(@"Added task : %@", self.listOfTasks);
     }else{
-        //objectInArray *hej = [[objectInArray alloc]init];
-        self.listOfTasks = [[NSMutableArray alloc] init];//WithObjects:hej, nil]; // = [NSMutableArray new];
+        self.listOfTasks = [[NSMutableArray alloc] init];
+        NSLog(@"Loadstate was nil");
     }
 }
 
 - (IBAction)addTask:(id)sender {
     if(![self.inputField.text isEqualToString: @""]){
         objectInArray *taskToBeAdded = [[objectInArray alloc]init];
-        
-        // taskToBeAdded -> dictionary
-        
-        
         taskToBeAdded.taskDescription = self.inputField.text;
-        taskToBeAdded.backgroundColor = UIColor.systemBackgroundColor;
         taskToBeAdded.isUrgent = NO;
         [self.listOfTasks addObject:taskToBeAdded];
+        
+        NSMutableDictionary *dict = [self convertObjectToDictionary: taskToBeAdded];
+        NSLog(@"trying to add dictionary: %@", dict);
+        [self addDictionaryToArray:dict];
+        [self saveState];
+        
         [self.toDoTable reloadData];
         self.inputField.text = @"";
-        //[self saveState];
     }
-    NSLog(@"Created tasks: %@", self.listOfTasks);
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"myCell" forIndexPath:indexPath];
-      
-        objectInArray *thisTask = self.listOfTasks[indexPath.row];
-        cell.textLabel.text = thisTask.taskDescription;
-      
-        if(thisTask.isUrgent == YES){
-            cell.backgroundColor = UIColor.greenColor;
+- (NSMutableArray*) convertDictionaryToArrayOfObjects:(NSMutableArray*)dict{
+    objectInArray *obj = [objectInArray new];
+    NSMutableArray *tasks = [NSMutableArray new];
+    for (int i = 0; i < dict.count; i++) {
+        NSString *isUrgent = [dict valueForKey:@"isUrgent"];//accessa rätt värde
+        if([isUrgent isEqualToString:@"1"]){
+            obj.isUrgent = YES;
         }else{
-            cell.backgroundColor = UIColor.systemBackgroundColor;
+            obj.isUrgent = NO;
         }
-    
-        return cell;
+        obj.taskDescription = [dict valueForKey:@"description"];
+        [tasks addObject:obj];
+    }
+    return tasks;
+}
+
+- (NSMutableDictionary *) convertObjectToDictionary:(objectInArray*)obj{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSString *isUrgent = @"";
+    if(obj.isUrgent == YES){
+        isUrgent = @"1";
+    }else{
+        isUrgent = @"0";
+    }
+    [dict setObject:isUrgent forKey:@"isUrgent"];
+    [dict setObject:obj.taskDescription forKey:@"description"];
+    return dict;
+}
+
+- (void) saveState{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:self.arrayOfDictionaries forKey:@"state"];
+    [defaults synchronize];
+    NSLog(@"Saved state : %@", self.arrayOfDictionaries);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -74,40 +98,65 @@
         markUrgent.isUrgent = YES;
     }
     [self.toDoTable reloadData];
-    
+    //ändra isUrgent för objektet på index indexPath.row i arrayOfDictionaries
+    //NSDictionary *dict = [self convertObjectToDictionary: markUrgent];
+    //säkerställ att man bara ändrar isUrgent
+    //[self.arrayOfDictionaries setObject:dict atIndexedSubscript:indexPath.row];
     //[self saveState];
+}
+
+- (NSMutableArray*) loadState {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *arrayOfSavedState = [NSMutableArray new];
+    arrayOfSavedState = [defaults objectForKey:@"state"];
+    NSLog(@"To be loaded : %@", arrayOfSavedState);
+    return arrayOfSavedState;
+
+    /*
+    for (int i = 0; i < ; i++) {
+        NSMutableDictionary *dic = [defaults objectForKey:[NSString stringWithFormat:@"task%d", i]];
+    }
+    
+    NSString *isUrgent = [dic objectForKey:@"isUrgent"];
+    objectInArray *obj = [[objectInArray alloc]init];
+        if ([isUrgent isEqualToString:@"1"]) {
+            obj.isUrgent = YES;
+        }else{
+            obj.isUrgent = NO;
+        }
+    
+    NSMutableArray *arr = [[NSMutableArray alloc]init];
+    for (int i = 0; i < dic.count; i++) {
+        NSString *indexKey = [NSString stringWithFormat:@"index%d", i];
+        arr[i] = [dic objectForKey:indexKey];
+    }
+    return arr;*/
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"myCell" forIndexPath:indexPath];
+    objectInArray *thisTask = self.listOfTasks[indexPath.row];
+    cell.textLabel.text = thisTask.taskDescription;
+  
+    if(thisTask.isUrgent == YES){
+        cell.backgroundColor = UIColor.greenColor;
+    }else{
+        cell.backgroundColor = UIColor.systemBackgroundColor;
+    }
+    return cell;
 }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.listOfTasks.count;
 }
 
-- (void) saveState {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
-
-    for (int i = 0; i < self.listOfTasks.count; i++) {
-        NSString *indexKey = [NSString stringWithFormat:@"index%d", i];
-        [dic setObject:self.listOfTasks[i] forKey:indexKey];
-    }
-    
-    [defaults setObject:dic forKey:@"state"];
-    [defaults synchronize];
-    NSLog(@"Saved state : %@", self.listOfTasks);
+- (void) addDictionaryToArray:(NSMutableDictionary*)dic {
+    [self.arrayOfDictionaries addObject:dic];
+    NSLog(@"added dictionary: %@", dic);
+    NSLog(@"to array: %@", self.arrayOfDictionaries);
 }
 
-- (NSMutableArray*) loadState {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *dic = [defaults objectForKey:@"state"];
-    NSMutableArray *arr = [[NSMutableArray alloc]init];
-    
-    for (int i = 0; i < dic.count; i++) {
-           NSString *indexKey = [NSString stringWithFormat:@"index%d", i];
-        arr[i] = [dic objectForKey:indexKey];
-    }
-    NSLog(@"Loaded state: %@", arr);
-    return arr;
-}
 @end
 
 

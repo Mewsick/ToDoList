@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *inputField;
 @property (weak, nonatomic) IBOutlet UIButton *addTaskButton;
 @property NSMutableArray *arrayOfDictionaries;
+@property NSMutableArray *listOfTasks;
 
 @end
 
@@ -23,16 +24,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.arrayOfDictionaries = [NSMutableArray new];
+    self.listOfTasks = [NSMutableArray new];
     self.toDoTable.dataSource = self;
     self.toDoTable.delegate = self;
     self.inputField.delegate = self;
     if([self loadState] != nil){
         self.arrayOfDictionaries = [self loadState];
-        //packa upp array of dictionarys och konvertera till objectInArray
         self.listOfTasks = [self convertDictionaryToArrayOfObjects:self.arrayOfDictionaries];
-        NSLog(@"Added task : %@", self.listOfTasks);
+        NSLog(@"Added tasks : %@", self.listOfTasks);
+        for (objectInArray* o in self.listOfTasks) {
+            NSLog(@"saudhuahsu %@", o.taskDescription);
+        }
     }else{
-        self.listOfTasks = [[NSMutableArray alloc] init];
         NSLog(@"Loadstate was nil");
     }
 }
@@ -42,32 +46,56 @@
         objectInArray *taskToBeAdded = [[objectInArray alloc]init];
         taskToBeAdded.taskDescription = self.inputField.text;
         taskToBeAdded.isUrgent = NO;
+        
         [self.listOfTasks addObject:taskToBeAdded];
-        
         NSMutableDictionary *dict = [self convertObjectToDictionary: taskToBeAdded];
-        NSLog(@"trying to add dictionary: %@", dict);
-        [self addDictionaryToArray:dict];
-        [self saveState];
+        NSLog(@"adding dict: %@ to arrayOfDictionaries", dict);
+        NSMutableArray *tempArr = [self.arrayOfDictionaries mutableCopy];
+        [tempArr addObject:dict];
+        self.arrayOfDictionaries = tempArr;
+        NSLog(@"adding successful %@", self.arrayOfDictionaries);
         
+        [self saveState];
         [self.toDoTable reloadData];
         self.inputField.text = @"";
     }
 }
 
+- (NSMutableArray*) loadState {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *arrayOfSavedState = [NSMutableArray new];
+    arrayOfSavedState = [defaults objectForKey:@"state"];
+    NSLog(@"Loading state : %@", arrayOfSavedState);
+    return arrayOfSavedState;
+}
+
 - (NSMutableArray*) convertDictionaryToArrayOfObjects:(NSMutableArray*)dict{
-    objectInArray *obj = [objectInArray new];
     NSMutableArray *tasks = [NSMutableArray new];
-    for (int i = 0; i < dict.count; i++) {
-        NSString *isUrgent = [dict valueForKey:@"isUrgent"];//accessa rätt värde
-        if([isUrgent isEqualToString:@"1"]){
-            obj.isUrgent = YES;
+    for (int i = 0; i < self.arrayOfDictionaries.count; i++) {
+        objectInArray *obj = [objectInArray new];
+        obj.taskDescription = [[dict valueForKey:@"description"] objectAtIndex:i];
+        NSString *isUrgent = [[dict valueForKey:@"isUrgent"] objectAtIndex:i];
+        if (isUrgent != nil) {
+            if([isUrgent isEqualToString:@"1"]){
+                obj.isUrgent = YES;
+            }else{
+                obj.isUrgent = NO;
+            }
         }else{
             obj.isUrgent = NO;
         }
-        obj.taskDescription = [dict valueForKey:@"description"];
+        NSLog(@"%@", obj.taskDescription);
         [tasks addObject:obj];
     }
+    NSLog(@"tasks in dictionary converted to array: %@", tasks);
     return tasks;
+}
+
+- (void) saveState{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:self.arrayOfDictionaries forKey:@"state"];
+    NSLog(@"Saving state : %@", self.arrayOfDictionaries);
+    [defaults synchronize];
 }
 
 - (NSMutableDictionary *) convertObjectToDictionary:(objectInArray*)obj{
@@ -83,13 +111,6 @@
     return dict;
 }
 
-- (void) saveState{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:self.arrayOfDictionaries forKey:@"state"];
-    [defaults synchronize];
-    NSLog(@"Saved state : %@", self.arrayOfDictionaries);
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     objectInArray *markUrgent = self.listOfTasks[indexPath.row];
     if(markUrgent.isUrgent == YES){
@@ -97,49 +118,26 @@
     }else{
         markUrgent.isUrgent = YES;
     }
+    
+    [self.listOfTasks setObject:markUrgent atIndexedSubscript:indexPath.row];
+    NSMutableDictionary *dict = [self convertObjectToDictionary: markUrgent];
+    
+    NSMutableArray *tempArr = [self.arrayOfDictionaries mutableCopy];
+    [tempArr addObject:dict];
+    self.arrayOfDictionaries = tempArr;
+    
+    [self saveState];
     [self.toDoTable reloadData];
-    //ändra isUrgent för objektet på index indexPath.row i arrayOfDictionaries
-    //NSDictionary *dict = [self convertObjectToDictionary: markUrgent];
-    //säkerställ att man bara ändrar isUrgent
-    //[self.arrayOfDictionaries setObject:dict atIndexedSubscript:indexPath.row];
-    //[self saveState];
-}
-
-- (NSMutableArray*) loadState {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableArray *arrayOfSavedState = [NSMutableArray new];
-    arrayOfSavedState = [defaults objectForKey:@"state"];
-    NSLog(@"To be loaded : %@", arrayOfSavedState);
-    return arrayOfSavedState;
-
-    /*
-    for (int i = 0; i < ; i++) {
-        NSMutableDictionary *dic = [defaults objectForKey:[NSString stringWithFormat:@"task%d", i]];
-    }
-    
-    NSString *isUrgent = [dic objectForKey:@"isUrgent"];
-    objectInArray *obj = [[objectInArray alloc]init];
-        if ([isUrgent isEqualToString:@"1"]) {
-            obj.isUrgent = YES;
-        }else{
-            obj.isUrgent = NO;
-        }
-    
-    NSMutableArray *arr = [[NSMutableArray alloc]init];
-    for (int i = 0; i < dic.count; i++) {
-        NSString *indexKey = [NSString stringWithFormat:@"index%d", i];
-        arr[i] = [dic objectForKey:indexKey];
-    }
-    return arr;*/
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"myCell" forIndexPath:indexPath];
-    objectInArray *thisTask = self.listOfTasks[indexPath.row];
-    cell.textLabel.text = thisTask.taskDescription;
-  
-    if(thisTask.isUrgent == YES){
+    
+    objectInArray *obj = self.listOfTasks[indexPath.row];
+    cell.textLabel.text = obj.taskDescription;
+    // NSLog(@"%@", obj.taskDescription);
+    if(obj.isUrgent == YES){
         cell.backgroundColor = UIColor.greenColor;
     }else{
         cell.backgroundColor = UIColor.systemBackgroundColor;
@@ -150,13 +148,6 @@
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.listOfTasks.count;
 }
-
-- (void) addDictionaryToArray:(NSMutableDictionary*)dic {
-    [self.arrayOfDictionaries addObject:dic];
-    NSLog(@"added dictionary: %@", dic);
-    NSLog(@"to array: %@", self.arrayOfDictionaries);
-}
-
 @end
 
 
